@@ -24,7 +24,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
       - name: Download and verify the distribution
@@ -37,10 +37,20 @@ jobs:
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$TAG.zip"
           python -c 'import hashlib,os,zipfile,pathlib; p=pathlib.Path(os.environ["TAG"]+".zip"); assert hashlib.sha256(p.read_bytes()).hexdigest()==os.environ["DIGEST"]; zipfile.ZipFile(p).extractall("dist")'
       - name: Install media tools
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if command -v ffmpeg && command -v ffprobe; then exit 0; fi
           case "$RUNNER_OS" in
-            Linux) sudo apt-get update -qq && sudo apt-get install -y ffmpeg ;;
+            Linux)
+              archive=ffmpeg-n8.1-latest-linux64-gpl-8.1.tar.xz
+              digest=$(gh release view latest --repo BtbN/FFmpeg-Builds --json assets --jq ".assets[] | select(.name == \"$archive\") | .digest")
+              gh release download latest --repo BtbN/FFmpeg-Builds --pattern "$archive"
+              echo "${digest#sha256:}  $archive" | sha256sum --check
+              mkdir "$RUNNER_TEMP/afm-ffmpeg"
+              tar -xf "$archive" -C "$RUNNER_TEMP/afm-ffmpeg" --strip-components=1
+              echo "$RUNNER_TEMP/afm-ffmpeg/bin" >> "$GITHUB_PATH"
+              ;;
             macOS) brew install ffmpeg ;;
             Windows) choco install ffmpeg -y --no-progress ;;
           esac
