@@ -2,3 +2,7 @@ demo/
 *.tmp
 node_modules/
 .DS_Store
+.afm-team/
+*.pem
+*.key
+*.sqlite*

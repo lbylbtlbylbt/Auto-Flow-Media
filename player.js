@@ -51,7 +51,7 @@ async function connect() {
   const timeout=setTimeout(()=>controller.abort(),6000);
   try {
     const {assetId,revision,resolverUrl}=manifest;
-    const response=await fetch(resolverUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assetId,revision}),signal:controller.signal,credentials:'omit'});
+    const response=await fetch(resolverUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assetId,revision}),signal:controller.signal,credentials:'same-origin'});
     if (!response.ok) throw Error();
     const entry=await response.json();
     if (id!==generation) return;

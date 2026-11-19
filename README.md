@@ -17,6 +17,17 @@ Open **http://127.0.0.1:8080**, select `demo/example.afm`, then press Play if th
 
 ## Use your own media
 
+With Node.js 24 and FFmpeg / FFprobe 7.1+, generate a custom offline version directly from a master or provide two existing renditions:
+
+```sh
+node prepare.mjs encode master.mp4 480 28 shot.afm shot-001 cut-3 https://media.example.org/v1/resolve
+node prepare.mjs pair offline.mp4 online.mp4 paired.afm shot-001 cut-3 https://media.example.org/v1/resolve
+```
+
+In `encode`, 480 is the output height and 28 is the H.264 CRF. Choose an even height and a CRF from 0 to 51 (lower is higher quality). Audio is copied and must be MP4-compatible. Both modes compare container start and duration, track start/duration and every video frame's rational presentation timestamp and duration. Missing timing or a mismatch rejects the pair. Matching timing alone cannot establish that two clips depict the same scene. This profile supports a single video track. Use an MP4 that target devices can play for online delivery.
+
+For private media, use the [HTTPS service and multi-user dashboard](TEAM.md). It includes workspace membership, roles, review notes, media availability controls and session-bound playback tickets.
+
 Choose local quality by encoding a self-contained proxy MP4 at the resolution and bitrate you want. The packer preserves its bytes. Prepare the remote rendition from the same edit.
 
 ```sh
