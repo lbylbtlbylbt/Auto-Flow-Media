@@ -7,4 +7,3 @@ encode(['-f','lavfi','-i','testsrc2=size=1280x720:rate=24','-f','lavfi','-i','si
 encode(['-i','demo/high.mp4','-vf','scale=320:180','-c:v','libx264','-crf','31','-g','48','-sc_threshold','0','-c:a','copy','-movflags','+faststart','demo/proxy.mp4']);
 execFileSync(process.execPath,['afm.mjs','pack','demo/proxy.mp4','demo/example.afm','demo','1','http://127.0.0.1:8080/v1/resolve'],{stdio:'inherit'});
 console.log('Open demo/example.afm in the player.');
-

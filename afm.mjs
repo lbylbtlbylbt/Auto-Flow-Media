@@ -89,4 +89,3 @@ async function run([command, input, output, assetId, revision, resolverUrl]) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href)
   run(process.argv.slice(2)).catch(error => { console.error(error.message); process.exitCode = 1; });
-

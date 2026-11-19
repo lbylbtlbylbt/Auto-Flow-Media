@@ -25,4 +25,3 @@ test('pack, inspect, restore, reject corrupt trailers and preserve existing outp
     assert.throws(()=>run('inspect',packed));
   } finally { await rm(dir,{recursive:true,force:true}); }
 });
-

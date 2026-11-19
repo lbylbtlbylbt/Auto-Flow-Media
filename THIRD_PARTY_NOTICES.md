@@ -9,4 +9,3 @@ Media owners retain rights to their recordings. Packaging a recording in AFM doe
 - [Node.js licenses](https://github.com/nodejs/node/blob/main/LICENSE)
 - [FFmpeg legal information](https://ffmpeg.org/legal.html)
 - [Project license](LICENSE)
-

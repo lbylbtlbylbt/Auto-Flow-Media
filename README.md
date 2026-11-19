@@ -39,10 +39,13 @@ The resolver maps an asset and revision to the current storage location. Supply 
 
 A NAS HTTP gateway, CDN or cloud-storage adapter can implement this contract. The URL must deliver the video bytes. A provider share page requires an adapter to resolve it. Handle provider login and expiring URLs in your resolver. The browser asks permission to contact the displayed resolver and keeps local audio throughout remote video playback. Two simultaneous video decoders may increase power use. Frame-accurate mastering and HDR workflows require host integration and separate validation.
 
+## Verification
+
+The initial Windows smoke test used Chrome, a generated 180p proxy and a 720p remote MP4. It verified local playback, automatic remote video selection and continued local playback after an offline remote fetch failed. The extracted proxy matched the input SHA-256 digest. Other operating systems and native host integrations still need testing.
+
 ## Integration and community
 
 - [File layout, resolver contract and playback rules](SPEC.md)
 - [Contribution guide](CONTRIBUTING.md) and [community conduct](CODE_OF_CONDUCT.md)
 - [Private security reports](SECURITY.md)
 - [MIT License](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md)
-

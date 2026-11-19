@@ -25,4 +25,3 @@ POST a UTF-8 JSON object containing assetId and revision to the resolver. A succ
 The browser reference supports seekable progressive MP4. Prepare a remote rendition with the same first presentation time, frame timeline, duration and aspect ratio as the local track. Serve byte ranges and put the MP4 movie header first. Select a codec supported by the target device. Keep local audio as the playback clock. A renderer may display remote video only while it has playable data at the matching time. On starvation, failure or seek, display local video until remote data is ready again.
 
 An implementation may use other delivery profiles by explicit negotiation in a future version. This draft has no mandatory central registry or cloud service.
-
