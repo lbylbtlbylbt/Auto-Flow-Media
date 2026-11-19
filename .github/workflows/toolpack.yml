@@ -1,0 +1,61 @@
+name: Test released toolpack
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag and ZIP basename
+        required: true
+        type: string
+      sha256:
+        description: Expected SHA-256 of the uploaded ZIP
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Download and verify the distribution
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          DIGEST: ${{ inputs.sha256 }}
+        run: |
+          [[ "$TAG" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$TAG.zip"
+          python -c 'import hashlib,os,zipfile,pathlib; p=pathlib.Path(os.environ["TAG"]+".zip"); assert hashlib.sha256(p.read_bytes()).hexdigest()==os.environ["DIGEST"]; zipfile.ZipFile(p).extractall("dist")'
+      - name: Install media tools
+        run: |
+          if command -v ffmpeg && command -v ffprobe; then exit 0; fi
+          case "$RUNNER_OS" in
+            Linux) sudo apt-get update -qq && sudo apt-get install -y ffmpeg ;;
+            macOS) brew install ffmpeg ;;
+            Windows) choco install ffmpeg -y --no-progress ;;
+          esac
+      - name: Exercise the shipped sample and HTTPS workspace
+        working-directory: dist/${{ inputs.tag }}
+        env:
+          MSYS2_ARG_CONV_EXCL: '*'
+        run: |
+          node --version
+          ffmpeg -version
+          node afm.mjs inspect demo/example.afm
+          node afm.mjs extract demo/example.afm restored.mp4
+          cmp restored.mp4 demo/proxy.mp4
+          ffmpeg -v error -i restored.mp4 -f null -
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj /CN=localhost -addext subjectAltName=IP:127.0.0.1 -keyout test-key.pem -out test-cert.pem
+          export AFM_TEST_CERT="$(node -p "require('path').resolve('test-cert.pem')")"
+          export AFM_TEST_KEY="$(node -p "require('path').resolve('test-key.pem')")"
+          node --test test.mjs team.test.mjs
