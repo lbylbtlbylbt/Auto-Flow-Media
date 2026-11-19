@@ -1,5 +1,7 @@
 # Auto Flow Media
 
+[Download the Alpha v1 toolpack for Windows, macOS and Linux](https://github.com/lbylbtlbylbt/Auto-Flow-Media/releases/tag/autoflowmedia-toolpack-alpha-v1). The ZIP includes a ready-to-play sample and a START-HERE guide.
+
 Carry a complete offline video in one `.afm` file and play its highest-quality remote rendition when the connection can sustain it. A game can ship a small cinematic with its installer. An editor can travel with a proxy and keep a stable reference to the original media.
 
 **Developer preview.** This repository ships a packer, inspector, extractor, local reference resolver and browser player. The current playback profile uses seekable MP4 over HTTP. HLS, native game-engine integrations, editor plug-ins and provider-specific sign-in are future work.
@@ -52,7 +54,7 @@ A NAS HTTP gateway, CDN or cloud-storage adapter can implement this contract. Th
 
 ## Verification
 
-The initial Windows smoke test used Chrome, a generated 180p proxy and a 720p remote MP4. It verified local playback, automatic remote video selection and continued local playback after an offline remote fetch failed. The extracted proxy matched the input SHA-256 digest. Other operating systems and native host integrations still need testing.
+The [Alpha v1 release checks](https://github.com/lbylbtlbylbt/Auto-Flow-Media/actions/runs/44495002059) downloaded the same ZIP on Windows, macOS and Ubuntu. Each runner verified its SHA-256, extracted and decoded the sample, compared the restored proxy bytes, and exercised proxy preparation, timing checks and the HTTPS team workspace. Interactive local playback, remote upgrade and fallback were also tested on Windows Chrome. Native host integrations are outside this alpha.
 
 ## Integration and community
 
